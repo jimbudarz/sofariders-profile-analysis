@@ -11,7 +11,7 @@ from scrapy import Field
 class SofaridersItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    username = Field()
+    user_url = Field()
     lastLogin = Field()
     couchStatus = Field()
     location = Field()

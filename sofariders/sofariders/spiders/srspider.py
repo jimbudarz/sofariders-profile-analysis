@@ -17,11 +17,11 @@ class SofaRidersSpider(spider):
         # Pull all available information from profile's About page and move on to other pages.
         user_url = response.xpath(
             "//div[@class='profile-sidebar__user-status u-text-center u-clear']//a/@href").extract_first()
-        Location = response.xpath(
+        location = response.xpath(
             "//a[@class='profile-sidebar__city text mod-regular mod-block']//text()").extract_first()
         lastLogin = response.xpath(
             "//li[@class='text mod-gray mod-medium']//text()").extract_first().strip()
-        ReferenceSummary = response.xpath(
+        referenceSummary = response.xpath(
             "//ul[@class='mod-icon-bullets']//li/strong/text()").extract()[1].strip()
         couchStatus = response.xpath(
             "//h1/span[@class='mod-large']//text()").extract_first().strip()
@@ -42,42 +42,55 @@ class SofaRidersSpider(spider):
         url_MyHome = response.xpath(
             "//a[@class='tab-link' and text()='My Home']//@href").extract_first()
 
-        yield Request(url=url_MyHome, meta={}, callback=self.parseMyHome)
+        resultsSoFar = {'user_url': user_url, 'location': location, 'lastLogin': lastLogin,
+                        'referenceSummary': referenceSummary, 'couchStatus': couchStatus,
+                        'verificationStatus': verificationStatus, 'languages': languages,
+                        'age': age, 'sex': sex, 'joinDate': joinDate, 'job': job,
+                        'education': education, 'hometown': hometown,
+                        'profileCompletion': profileCompletion}
+
+        yield Request(url=url_MyHome, meta=resultssofar, callback=self.parseMyHome)
 
     def parseMyHome(self, response):
+        # Add all information on this page to the meta
+        resultsSoFar = results.meta
+
         url_references = response.xpath(
             "//a[@class='tab-link' and contains(text(),'References')]//@href").extract_first()
 
-        pass
+        yield Request(url = url_references, meta=resultsSoFar, callback=parseReferences)
 
     def parseReferences(self, response):
+        resultsSoFar = results.meta
 
         url_friends = response.xpath(
             "//a[@class='tab-link' and contains(text(),'Friends')]//@href").extract()
-        pass
+
+        yield Request(url=url_friends, meta=resultsSoFar, callback=parseFriends)
 
     def parseFriends(self, response):
+        resultsSoFar = results.meta
 
         item = SofaridersItem()
-        item['responseRate'] =
-        item['user_url'] =  # Assigned
-        item['lastLogin'] =  # Assigned
-        item['couchStatus'] =  # Assigned
-        item['location'] =  # Assigned
-        item['verificationStatus'] =  # Assigned
-        item['languages'] =  # Assigned
-        item['age'] =  # Assigned
-        item['sex'] =  # Assigned
-        item['joinDate'] =  # Assigned
-        item['hometown'] =  # Assigned
-        item['profileCompletion'] =  # Assigned
-        item['education'] =  # Assigned
-        item['maxGuests'] =
-        item['preferredGender'] =
-        item['lastMinuteOkay'] =
-        item['refs_fromSurfers_pos'] =
-        item['refs_fromSurfers_neg'] =
-        item['refs_fromHosts_pos'] =
-        item['refs_fromHosts_neg'] =
-        item['friends'] =
+        item['responseRate'] = []
+        item['user_url'] =  resultsSoFar['user_url'] # Assigned
+        item['lastLogin'] =  resultsSoFar['lastLogin']# Assigned
+        item['couchStatus'] =  resultsSoFar['couchStatus']# Assigned
+        item['location'] = resultsSoFar['location'] # Assigned
+        item['verificationStatus'] =  resultsSoFar['verificationStatus']# Assigned
+        item['languages'] =  resultsSoFar['languages']# Assigned
+        item['age'] =  resultsSoFar['age']# Assigned
+        item['sex'] =  resultsSoFar['sex']# Assigned
+        item['joinDate'] =  resultsSoFar['joinDate']# Assigned
+        item['hometown'] =  resultsSoFar['hometown']# Assigned
+        item['profileCompletion'] =  resultsSoFar['profileCompletion']# Assigned
+        item['education'] = resultsSoFar['education'] # Assigned
+        item['maxGuests'] = []
+        item['preferredGender'] = []
+        item['lastMinuteOkay'] = []
+        item['refs_fromSurfers_pos'] = []
+        item['refs_fromSurfers_neg'] = []
+        item['refs_fromHosts_pos'] = []
+        item['refs_fromHosts_neg'] = []
+        item['friends'] = []
         yield item
