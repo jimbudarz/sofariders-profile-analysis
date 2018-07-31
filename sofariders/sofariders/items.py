@@ -5,10 +5,10 @@
 # See documentation in:
 # https://doc.scrapy.org/en/latest/topics/items.html
 
-from scrapy import Field
+from scrapy import Field, Item
 
 
-class SofaridersItem(scrapy.Item):
+class SofaridersItem(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     user_url = Field()
@@ -20,7 +20,7 @@ class SofaridersItem(scrapy.Item):
     languages = Field()
     age = Field()
     sex = Field()
-    memberSince = Field()
+    joinDate = Field()
     hometown = Field()
     profileCompletion = Field()
     education = Field()
