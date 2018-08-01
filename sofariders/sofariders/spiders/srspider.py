@@ -2,6 +2,7 @@ from scrapy import Spider, Request
 from sofariders.items import SofaridersItem
 import numpy as np
 from urllib.parse import urljoin
+import csv
 
 
 class SofaRidersSpider(Spider):
@@ -14,12 +15,15 @@ class SofaRidersSpider(Spider):
         responseRate = 0
         resultsSoFar = {'responseRate': responseRate}
 
-        urls = ['https://www.couchsurfing.com/people/veysel-tunca',
-                'https://www.couchsurfing.com/people/ryany',
-                'https://www.couchsurfing.com/people/swaroop-bose',
-                'https://www.couchsurfing.com/people/bennyroyce-royon']
+        urls = []
+        with open('profileURLs.csv','r') as urlfile:
+            allurls = csv.reader(urlfile)
+            for row in allurls:
+                urls = urls + row
 
-        for url in urls:
+        #raise SystemExit(0) # Stop before parsing any pages
+
+        for url in urls[0:2]:
             yield Request(url=url, meta=resultsSoFar, callback=self.parseAbout)
 
     def parseAbout(self, response): # Parse the information from profile's About page.
@@ -45,13 +49,9 @@ class SofaRidersSpider(Spider):
 
         url_MyHome = response.xpath("//a[@class='tab-link' and text()='My Home']//@href").extract_first()
 
-        print(50 * '=')
-        print(resultsSoFar)
-        print(50 * '=')
-
         item = SofaridersItem()
         item['responseRate'] = []
-        item['user_url'] = resultsSoFar['user_url']  # Assigned
+        item['user_url'] = response.request.url  # Assigned
         item['lastLogin'] = resultsSoFar['lastLogin']  # Assigned
         item['couchStatus'] = resultsSoFar['couchStatus']  # Assigned
         item['location'] = resultsSoFar['location']  # Assigned
