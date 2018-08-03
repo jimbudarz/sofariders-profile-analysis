@@ -2,13 +2,14 @@ from scrapy import Spider, Request
 from sofariders.items import SofaridersItem
 import numpy as np
 from urllib.parse import urljoin
-import csv
+import pandas as pd
+import random
 
 
 class SofaRidersSpider(Spider):
     name = 'sofariders_spider'
     allowed_urls = ["https://www.couchsurfing.com/"]
-    start_urls = ["https://www.couchsurfing.com/places/north-america/united-states/new-york/accommodation"]
+    start_urls = ["https://www.couchsurfing.com/"]
 
 
     def parse(self, response):
@@ -16,14 +17,13 @@ class SofaRidersSpider(Spider):
         resultsSoFar = {'responseRate': responseRate}
 
         urls = []
-        with open('profileURLs.csv','r') as urlfile:
-            allurls = csv.reader(urlfile)
-            for row in allurls:
-                urls = urls + row
-
+        allurls = pd.read_csv('profileURLs.csv', header = None)
+        for row in allurls[0]:
+            urls = urls + [row]
+        random.shuffle(urls)
         #raise SystemExit(0) # Stop before parsing any pages
 
-        for url in urls[0:2]:
+        for url in urls:
             yield Request(url=url, meta=resultsSoFar, callback=self.parseAbout)
 
     def parseAbout(self, response): # Parse the information from profile's About page.
