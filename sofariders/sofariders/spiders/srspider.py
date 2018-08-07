@@ -17,10 +17,18 @@ class SofaRidersSpider(Spider):
         resultsSoFar = {'responseRate': responseRate}
 
         urls = []
-        allurls = pd.read_csv('profileURLs.csv', header = None)
-        for row in allurls[0]:
-            urls = urls + [row]
+        searchResultData = pd.read_csv('profileURLs.csv', header = None)
+        finishedUsers = pd.read_csv('sofarider_profiles.csv')
+        #print(list(finishedUsers['user_url']))
+        for userurl in searchResultData[0]:
+            if userurl in list(finishedUsers['user_url']):
+                continue
+            else:
+                urls = urls + [userurl]
+        print(str(len(urls)) + " users left to scrape")
+        print(50*'=')
         random.shuffle(urls)
+
         #raise SystemExit(0) # Stop before parsing any pages
 
         for url in urls:
@@ -39,7 +47,10 @@ class SofaRidersSpider(Spider):
         AboutSummary = response.xpath("//ul[@class = 'mod-icon-bullets']/li/text()").extract()
         AboutSummary = list(map(lambda x: x.strip(), AboutSummary))
         resultsSoFar['languages'] = AboutSummary[1].strip()
-        resultsSoFar['age'] = int(AboutSummary[2].strip().split(', ')[0])
+        try:
+            resultsSoFar['age'] = int(AboutSummary[2].strip().split(', ')[0])
+        except:
+            resultsSoFar['age'] = 0
         resultsSoFar['sex'] = AboutSummary[2].strip().split(', ')[1]
         resultsSoFar['joinDate'] = AboutSummary[4].strip()
         resultsSoFar['job'] = AboutSummary[6].strip()

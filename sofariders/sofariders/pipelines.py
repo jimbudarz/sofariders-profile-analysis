@@ -16,7 +16,7 @@ class WriteItemPipeline(object):
         self.filename = 'sofarider_profiles.csv'
 
     def open_spider(self, spider):
-        self.csvfile = open(self.filename, 'wb')
+        self.csvfile = open(self.filename, 'ab')
         self.exporter = CsvItemExporter(self.csvfile)
         self.exporter.start_exporting()
 
