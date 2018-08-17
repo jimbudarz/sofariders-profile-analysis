@@ -5,4 +5,4 @@
 -   **Info unavailable:** Private messages, request numbers and acceptances/denials.
 -   **Questions:** How many members are freeloaders? What traits correspond to reviews? How often is a bad review the last event? What proportion of reviews are bad? Where are the most frequent hosts located and where are the most frequent travelers from?
 
-https://docs.google.com/presentation/d/18GEzutx_rumdzb2B7nIq5fICM-CQd7z8_-p8edulcz0/edit?usp=sharing
+http://jamesbudarz.com/2018/08/16/couchsurfing-unsustainable-growth-in-a-social-network/
